@@ -1,0 +1,79 @@
+﻿@model StudentViewModel
+
+@{
+    ViewBag.Title = "Students View";
+
+    string baseCssClass = "nav-link";
+    string cssClass = "";
+}
+
+<div class="row">
+    <ul class="nav nav-tabs">
+        @if (Model.ActiveStatus == "All")
+        {
+            cssClass = baseCssClass + " active";
+        }
+        else
+        {
+            cssClass = baseCssClass;
+        }
+        <li class="nav-item">
+            <a class="@cssClass" asp-controller="Student" asp-action="Items" asp-route-status="All">All</a>
+        </li>
+        @foreach (string status in Model.Status)
+        {
+            @if (status == Model.ActiveStatus)
+            {
+                cssClass = baseCssClass + " active";
+            }
+            else
+            {
+                cssClass = baseCssClass;
+            }
+                <li class="nav-item">
+                    <a class="@cssClass" asp-controller="Student" asp-action="Items" asp-route-status="@status">@status</a>
+                </li>
+        }
+    </ul>
+</div>
+
+<div class="row mt-3">
+    
+    <div class="col-lg-8 col-md-8">
+        <h2>Student List</h2>
+        @if (Model.Students.Count() > 0)
+        {
+                <ul>
+                @foreach (Student student in Model.Students)
+                {
+                            <li class="mb-2">@student.Name</li>
+                }
+                </ul>
+        }
+        else
+        {
+                <p>No Students to Show</p>
+        }
+    </div>
+
+    
+    <div class="col-lg-4 col-md-6 mb-3">
+        <h2>Add New Student</h2>
+        <div asp-validation-summary="ModelOnly"></div>
+        <form asp-action="Create" method="post">
+            
+            <div class="form-group">
+                <label asp-for="Student.Name"></label>
+                <input asp-for="Student.Name" class="form-control" />
+                <span asp-validation-for="Student.Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Enrollment Status</label>
+                <select asp-for="Student.EnrollmentStatus" class="form-control" asp-items="@(new SelectList(Model.Status))"></select>
+            </div>
+            <br />
+            <button type="submit" class="btn btn-primary">Add</button>
+        </form>
+    </div>
+</div>
